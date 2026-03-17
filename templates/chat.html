@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Chat</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="chat-box" id="chatBox"></div>
+
+<div class="input-box">
+    <input type="text" id="message" placeholder="Ask something...">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+async function sendMessage() {
+    let msg = document.getElementById("message").value;
+
+    addMessage("user", msg);
+
+    let res = await fetch('/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message: msg})
+    });
+
+    let data = await res.json();
+
+    addMessage("bot", data.reply);
+
+    document.getElementById("message").value = "";
+}
+
+function addMessage(sender, text) {
+    let chatBox = document.getElementById("chatBox");
+
+    let div = document.createElement("div");
+    div.className = sender;
+
+    div.innerText = text;
+
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+
+</body>
+</html>
