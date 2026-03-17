@@ -31,9 +31,15 @@ def simple_ai_response(user_msg):
 def home():
     return render_template("chat.html")
 
-@app.route('/chat', methods=['POST'])
+@app.route('/chat', methods=['GET','POST'])
 def chat_api():
-    data = request.json
+
+    if request.method == 'GET':
+        return jsonify([])  
+    
+    data = request.get_json()
+    if not data:
+        return {"error": "No data received"}, 400
     user_msg = data.get("message")
 
     bot_reply = simple_ai_response(user_msg)
